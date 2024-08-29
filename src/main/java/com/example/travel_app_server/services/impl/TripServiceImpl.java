@@ -5,6 +5,7 @@ import com.example.travel_app_server.models.Trip;
 import com.example.travel_app_server.repositories.TripRepository;
 import com.example.travel_app_server.services.TripService;
 import com.example.travel_app_server.utils.TripMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class TripServiceImpl implements TripService {
     @Autowired
     private TripRepository tripRepository;
     @Override
+    @Transactional
     public TripDto addTrip(TripDto tripDto) {
         Trip trip = TripMapper.toEntity(tripDto);
         Trip savedTrip = tripRepository.save(trip);
@@ -41,11 +43,13 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
+    @Transactional
     public void deleteTrip(Long id) {
         tripRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public TripDto updateTrip(TripDto tripDto) {
         Trip trip = TripMapper.toEntity(tripDto);
         Trip updatedTrip = tripRepository.save(trip);

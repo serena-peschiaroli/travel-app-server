@@ -1,10 +1,12 @@
 package com.example.travel_app_server.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -14,10 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 public class StopDto {
 private Long id;
+@NotBlank(message = "Title is mandatory")
+private String title;
+@NotBlank(message = "Location is mandatory")
 private String location;
 private String description;
 private List<String> curiosities;
-private List<String> photo;
-private Date date;
+private List<String> photos;
+private LocalDateTime date;
 private Long tripId;
 }

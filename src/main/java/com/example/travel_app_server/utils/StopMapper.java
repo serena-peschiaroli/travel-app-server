@@ -4,6 +4,7 @@ import com.example.travel_app_server.dto.StopDto;
 import com.example.travel_app_server.models.Stop;
 import com.example.travel_app_server.models.Trip;
 
+
 public class StopMapper {
 
     public static StopDto toDto(Stop stop){
@@ -12,7 +13,7 @@ public class StopMapper {
                 .location(stop.getLocation())
                 .description(stop.getDescription())
                 .curiosities(stop.getCuriosities())
-                .photo(stop.getCuriosities())
+                .photo(stop.getPhotos())
                 .date(stop.getDate())
                 .tripId(stop.getTrip().getId())
                 .build();

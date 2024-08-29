@@ -9,13 +9,16 @@ import com.example.travel_app_server.repositories.StopRepository;
 import com.example.travel_app_server.repositories.TripRepository;
 import com.example.travel_app_server.services.ExpenseService;
 import com.example.travel_app_server.utils.ExpenseMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
@@ -43,6 +46,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
+    @Transactional
+
     public ExpenseDto addExpense(ExpenseDto expenseDto) {
         Trip trip = tripRepository.findById(expenseDto.getTripId())
                 .orElseThrow(()->new ResourceNotFoundException("trip not found with id " + expenseDto.getTripId()));
@@ -51,7 +56,18 @@ public class ExpenseServiceImpl implements ExpenseService {
         if(expenseDto.getStopId() != null){
             stop = stopRepository.findById(expenseDto.getStopId())
                     .orElseThrow(()-> new ResourceNotFoundException("stop not found with id " + expenseDto.getStopId()));
+
+            if(!stop.getTrip().getId().equals(expenseDto.getTripId())){
+                throw new IllegalArgumentException("The provided stop is not associated with this trip");
+            }
+
+            expenseDto.setDate(stop.getDate());
+        }else{
+            LocalDate tripDate = trip.getStartDate();
+            expenseDto.setDate(tripDate.atStartOfDay());
         }
+
+
 
         Expense expense = ExpenseMapper.toEntity(expenseDto, trip, stop);
         Expense savedExpense = expenseRepository.save(expense);
@@ -71,7 +87,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseDto> getExpensesByStopId(Long stopId) {
-        return null;
+        Stop stop = stopRepository.findById(stopId)
+                .orElseThrow(()-> new ResourceNotFoundException("Stop not found with id " + stopId));
+
+        List<Expense> expenses = expenseRepository.findByStop(stop);
+        return expenses.stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -101,6 +121,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public void deleteExpense(Long id) {
+
+        if(!expenseRepository.existsById(id)){
+            throw new ResourceNotFoundException("Expense not found with id" + id);
+        }
+
+        expenseRepository.deleteById(id);
+
 
     }
 }

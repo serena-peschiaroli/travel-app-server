@@ -7,6 +7,7 @@ import com.example.travel_app_server.repositories.StopRepository;
 import com.example.travel_app_server.repositories.TripRepository;
 import com.example.travel_app_server.services.StopService;
 import com.example.travel_app_server.utils.StopMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class StopServiceImpl implements StopService {
     private TripRepository tripRepository;
 
     @Override
+    @Transactional
     public StopDto addStop(Long tripId, StopDto stopDto) {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(()-> new ResourceNotFoundException("Trip not found with id " + tripId));
@@ -53,6 +55,8 @@ public class StopServiceImpl implements StopService {
     }
 
     @Override
+    @Transactional
+
     public void deleteStop(Long id) {
         if(!stopRepository.existsById(id)){
             throw new ResourceNotFoundException("Stop not found with id" + id);
@@ -62,13 +66,23 @@ public class StopServiceImpl implements StopService {
     }
 
     @Override
+    @Transactional
     public StopDto updateStop(StopDto stopDto) {
+
+        Stop existingStop = stopRepository.findById(stopDto.getId())
+                .orElseThrow(()-> new ResourceNotFoundException("Stop not found with id " + stopDto
+                        .getId()));
         Trip trip = tripRepository.findById(stopDto.getTripId())
                 .orElseThrow(()-> new ResourceNotFoundException("Trip not found with id" + stopDto.getTripId()));
 
-        Stop stop = StopMapper.toEntity(stopDto, trip);
+        existingStop.setTitle(stopDto.getTitle());
+        existingStop.setLocation(stopDto.getLocation());
+        existingStop.setDescription(stopDto.getDescription());
+        existingStop.setPhotos(stopDto.getPhotos());
+        existingStop.setDate(stopDto.getDate());
+        existingStop.setTrip(trip);
 
-        Stop updateStop = stopRepository.save(stop);
+        Stop updateStop = stopRepository.save(existingStop);
 
         return StopMapper.toDto(updateStop);
     }
