@@ -13,9 +13,10 @@ public class StopMapper {
                 .location(stop.getLocation())
                 .description(stop.getDescription())
                 .curiosities(stop.getCuriosities())
-                .photo(stop.getPhotos())
+                .photos(stop.getPhotos())
                 .date(stop.getDate())
                 .tripId(stop.getTrip().getId())
+                .rating(stop.getRating())
                 .build();
 
     }
@@ -26,9 +27,10 @@ public class StopMapper {
                 .location(stopDto.getLocation())
                 .description(stopDto.getDescription())
                 .curiosities(stopDto.getCuriosities())
-                .photos(stopDto.getPhoto())
+                .photos(stopDto.getPhotos())
                 .date(stopDto.getDate())
                 .trip(trip)
+                .rating(stopDto.getRating())
                 .build();
     }
 }

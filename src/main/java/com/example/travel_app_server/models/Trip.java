@@ -36,5 +36,12 @@ public class Trip {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses;
 
+    @ManyToMany
+    @JoinTable(
+            name = "category_trip",
+            joinColumns = @JoinColumn(name="trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
+
 
 }

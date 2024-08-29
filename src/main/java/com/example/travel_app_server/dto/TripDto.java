@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,4 +24,5 @@ public class TripDto {
     private LocalDate startDate;
     @NotNull(message = "End date is mandatory")
     private LocalDate endDate;
+    private List<CategoryDto> categories;
 }

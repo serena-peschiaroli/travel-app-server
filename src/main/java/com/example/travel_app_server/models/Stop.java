@@ -7,9 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.util.Date;
+
 import java.util.List;
 
 @Entity
@@ -35,6 +35,8 @@ public class Stop {
     @Column(name = "photo_path")
     private List<String> photos;
     private LocalDateTime date;
+    @Column(name = "rating")
+    private Integer rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id", nullable = false)
