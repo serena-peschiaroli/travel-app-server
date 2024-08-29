@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/trips/{tripsId}/stops")
+@RequestMapping("/api/trips/{tripId}/stops")
 public class StopControllers {
 
     @Autowired
@@ -55,9 +55,11 @@ public class StopControllers {
     public ResponseEntity<ApiResponse<StopDto>> addStop(@PathVariable Long tripId, @RequestPart("stop") StopDto stopDto, @RequestPart("photos")MultipartFile[] files){
 
         List<String> photoPaths = new ArrayList<>();
-        for (MultipartFile file : files){
-            String filePath = fileStorageService.storeFile(file);
-            photoPaths.add(filePath);
+        if (files != null) {
+            for (MultipartFile file : files) {
+                String filePath = fileStorageService.storeFile(file);
+                photoPaths.add(filePath);
+            }
         }
 
         stopDto.setPhotos(photoPaths);

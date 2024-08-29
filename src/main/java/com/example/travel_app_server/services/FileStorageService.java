@@ -21,6 +21,10 @@ public class FileStorageService {
             String fileName = file.getOriginalFilename();
             Path targetLocation = Paths.get(uploadDir).resolve(fileName);
 
+            //TODO: first upload file locally, then change to cloud server
+
+            Files.createDirectories(targetLocation.getParent());
+
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return targetLocation.toString();
 

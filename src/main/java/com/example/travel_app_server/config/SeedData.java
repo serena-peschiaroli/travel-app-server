@@ -8,8 +8,10 @@ import com.example.travel_app_server.repositories.CategoryRepository;
 import com.example.travel_app_server.repositories.ExpenseRepository;
 import com.example.travel_app_server.repositories.StopRepository;
 import com.example.travel_app_server.repositories.TripRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Component
 public class SeedData implements CommandLineRunner {
 
     @Autowired
@@ -34,6 +37,7 @@ public class SeedData implements CommandLineRunner {
 
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         if (tripRepository.count() == 0) {
 
@@ -63,32 +67,32 @@ public class SeedData implements CommandLineRunner {
             Stop stop1 = createStop("Basilica di San Vitale", "Ravenna, Basilica di San Vitale", "Visit the famous basilica.",
                     Arrays.asList("Mosaic of Emperor Justinian", "Unique octagonal shape of the basilica"),
                     Arrays.asList("path_to_photo1", "path_to_photo2"),
-                    LocalDateTime.of(2024, 8, 8, 8, 0), trip1);
+                    LocalDateTime.of(2024, 8, 8, 8, 0), 4, trip1);
 
             Stop stop2 = createStop("Mausoleum of Galla Placidia", "Ravenna, Mausoleum of Galla Placidia", "Explore the mausoleum.",
                     Arrays.asList("Mosaic of the Good Shepherd", "Oldest mosaics in Ravenna"),
                     Arrays.asList("path_to_photo3", "path_to_photo4"),
-                    LocalDateTime.of(2024, 8, 8, 12, 0), trip1);
+                    LocalDateTime.of(2024, 8, 8, 12, 0), 3, trip1);
             Stop stop3 = createStop("Piazza del Popolo", "Ravenna, Piazza del Popolo", " walk in Ravenna's central square,",
                     Arrays.asList("Venetian-style columns", "Historic city clock tower"),
                     Arrays.asList("path_to_photo3", "path_to_photo4"),
-                    LocalDateTime.of(2024, 8, 8, 16, 0), trip1);
+                    LocalDateTime.of(2024, 8, 8, 16, 0), 4, trip1);
             Stop stop4 = createStop("Piazza del Popolo", "Ravenna, Piazza del Popolo", " walk in Ravenna's central square,",
                     Arrays.asList("Venetian-style columns", "Historic city clock tower"),
                     Arrays.asList("path_to_photo3", "path_to_photo4"),
-                    LocalDateTime.of(2024, 8, 9, 10, 0), trip1);
+                    LocalDateTime.of(2024, 8, 9, 10, 0), 3, trip1);
             Stop stop5 = createStop("Archiepiscopal Museum and Chapel", "Ravenna, Archiepiscopal Museum and Chapel", " walk in Ravenna's central square,",
                     Arrays.asList("Ivory Throne of Maximian", "Ancient Christian sarcophagi"),
                     Arrays.asList("path_to_photo3", "path_to_photo4"),
-                    LocalDateTime.of(2024, 8, 9, 14, 0), trip1);
+                    LocalDateTime.of(2024, 8, 9, 14, 0),3, trip1);
             Stop stop6 = createStop("Dante's Tomb and Quadrarco of Braccioforte", "Ravenna, Dante's Tomb", " Visit the Archiepiscopal Chapel and museum",
                     Arrays.asList("Tomb of Dante", "Eternal flame maintained by Florence"),
                     Arrays.asList("path_to_photo3", "path_to_photo4"),
-                    LocalDateTime.of(2024, 8, 9, 14, 0), trip1);
+                    LocalDateTime.of(2024, 8, 9, 14, 0),3, trip1);
             Stop stop7 = createStop("Basilica di Sant'Apollinare Nuovo", "Ravenna, Basilica di Sant'Apollinare Nuovo", " UNESCO World Heritage site.",
                     Arrays.asList("Mosaics of the procession of saints", "Bell tower dating back to the 9th century"),
                     Arrays.asList("path_to_photo3", "path_to_photo4"),
-                    LocalDateTime.of(2024, 8, 9, 16, 0), trip1);
+                    LocalDateTime.of(2024, 8, 9, 16, 0),3, trip1);
 
 
 
@@ -112,17 +116,19 @@ public class SeedData implements CommandLineRunner {
 
 
 
-            expenseRepository.saveAll(Arrays.asList(expense1, expense2, expense3, expense4, expense5, expense6, expense6, expense7, expense8, expense9));
+            expenseRepository.saveAll(Arrays.asList(expense1, expense2, expense3, expense4, expense5, expense6, expense7, expense8, expense9));
         }
     }
 
-    private Stop createStop(String title, String location, String description, List<String> curiosities, List<String> photos, LocalDateTime date, Trip trip) {
+    private Stop createStop(String title, String location, String description, List<String> curiosities, List<String> photos, LocalDateTime date, Integer rating, Trip trip) {
         return Stop.builder()
+                .title(title)
                 .location(location)
                 .description(description)
                 .curiosities(curiosities)
                 .photos(photos)
                 .date(date)
+                .rating(rating)
                 .trip(trip)
                 .build();
     }

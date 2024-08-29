@@ -77,12 +77,26 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseDto getExpenseById(Long id) {
-        return null;
+
+        //fetch expense
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Expense not found with id " + id));
+
+        //convert
+        return ExpenseMapper.toDto(expense);
     }
 
     @Override
     public List<ExpenseDto> getExpensesByTripId(Long tripId) {
-        return null;
+        //fetch trip
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(()->new ResourceNotFoundException("trip not found " + tripId));
+
+
+        //fetch associated expenses
+        List<Expense> expenses = expenseRepository.findByTrip(trip);
+
+        return expenses.stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
