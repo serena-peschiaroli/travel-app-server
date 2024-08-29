@@ -1,8 +1,10 @@
 package com.example.travel_app_server.config;
 
+import com.example.travel_app_server.models.Category;
 import com.example.travel_app_server.models.Expense;
 import com.example.travel_app_server.models.Stop;
 import com.example.travel_app_server.models.Trip;
+import com.example.travel_app_server.repositories.CategoryRepository;
 import com.example.travel_app_server.repositories.ExpenseRepository;
 import com.example.travel_app_server.repositories.StopRepository;
 import com.example.travel_app_server.repositories.TripRepository;
@@ -12,6 +14,7 @@ import org.springframework.boot.CommandLineRunner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,10 +29,26 @@ public class SeedData implements CommandLineRunner {
     @Autowired
     private ExpenseRepository expenseRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
 
     @Override
     public void run(String... args) throws Exception {
         if (tripRepository.count() == 0) {
+
+
+            Category personalCategory = new Category();
+            personalCategory.setName("Personal");
+            personalCategory.setColor("yellow");
+
+            Category workCategory = new Category();
+            workCategory.setName("Work");
+            workCategory.setColor("orange");
+
+
+            categoryRepository.saveAll(Arrays.asList(personalCategory, workCategory));
+
 
 
             Trip trip1 = Trip.builder()
@@ -37,6 +56,7 @@ public class SeedData implements CommandLineRunner {
                     .description("A two-day visit to Ravenna")
                     .startDate(LocalDate.of(2024, 8, 8))
                     .endDate(LocalDate.of(2024, 8, 10))
+                    .categories(Arrays.asList(personalCategory))
                     .build();
             tripRepository.save(trip1);
 

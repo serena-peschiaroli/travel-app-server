@@ -14,4 +14,6 @@ public interface TripService {
     List<TripDto> getAllTrips();
     void deleteTrip(Long id);
     TripDto updateTrip(TripDto tripDto);
+
+    List<TripDto> getTripsByCategoryId(Long categoryId);
 }

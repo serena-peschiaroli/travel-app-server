@@ -84,6 +84,21 @@ public class TripServiceImpl implements TripService {
         return TripMapper.toDto(updatedTrip);
     }
 
+    @Override
+    public List<TripDto> getTripsByCategoryId(Long categoryId) {
+        //find category
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new ResourceNotFoundException("caategory not found with id" + categoryId));
+
+        //get all trips associated with categoryId
+        List<Trip> trips = tripRepository.findByCategoriesContaining(category);
+
+        //convert the list to dto
+
+        return trips.stream().map(TripMapper::toDto).collect(Collectors.toList());
+    }
+
+
 
 
 }

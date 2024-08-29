@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class TripController {
                 .status("success")
                 .data(createdTrip)
                 .message("Trip created successfully")
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -37,7 +38,7 @@ public class TripController {
                 .status("success")
                 .data(trip)
                 .message("Trip retrieved successfully")
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -49,7 +50,7 @@ public class TripController {
                 .status("success")
                 .data(trips)
                 .message("Trips retrieved successfully")
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -62,7 +63,7 @@ public class TripController {
                 .status("success")
                 .data(updatedTrip)
                 .message("Trip updated successfully")
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -73,7 +74,7 @@ public class TripController {
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .status("success")
                 .message("Trip deleted successfully")
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
