@@ -1,9 +1,6 @@
 package com.example.travel_app_server.config;
 
-import com.example.travel_app_server.models.Category;
-import com.example.travel_app_server.models.Expense;
-import com.example.travel_app_server.models.Stop;
-import com.example.travel_app_server.models.Trip;
+import com.example.travel_app_server.models.*;
 import com.example.travel_app_server.repositories.CategoryRepository;
 import com.example.travel_app_server.repositories.ExpenseRepository;
 import com.example.travel_app_server.repositories.StopRepository;
@@ -100,17 +97,16 @@ public class SeedData implements CommandLineRunner {
             stopRepository.saveAll(Arrays.asList(stop1, stop2, stop3, stop4, stop5, stop6, stop7));
 
 
-            Expense expense1 = createExpense(new BigDecimal("50.00"), "Car gasoline", LocalDateTime.of(2024, 8, 8, 7, 0), trip1, null);
-            Expense expense2 = createExpense(new BigDecimal("120.00"), "Hotel room", LocalDateTime.of(2024, 8, 8, 20, 0), trip1, null);
+            Expense expense1 = createExpense(new BigDecimal("50.00"), "Car gasoline", LocalDateTime.of(2024, 8, 8, 7, 0), trip1, null, ExpenseCategory.TRANSPORT);
+            Expense expense2 = createExpense(new BigDecimal("120.00"), "Hotel room", LocalDateTime.of(2024, 8, 8, 20, 0), trip1, null, ExpenseCategory.HOTELS);
+            Expense expense3 = createExpense(new BigDecimal("10.00"), "Museum ticket", stop1.getDate(), trip1, stop1, ExpenseCategory.MEALS);
+            Expense expense4 = createExpense(new BigDecimal("5.00"), "Audio guide", stop2.getDate(), trip1, stop2, ExpenseCategory.MISCELLANEOUS);
+            Expense expense5 = createExpense(new BigDecimal("35.00"), "Lunch", LocalDateTime.of(2024, 8, 8, 13, 0), trip1, null, ExpenseCategory.MEALS);
+            Expense expense6 = createExpense(new BigDecimal("10.00"), "Entrance Ticket", stop5.getDate(), trip1, stop5, ExpenseCategory.MISCELLANEOUS);
+            Expense expense7 = createExpense(new BigDecimal("12.00"), "Cocktail at local bar", LocalDateTime.of(2024, 8, 8, 17, 0), trip1, null, ExpenseCategory.MEALS);
+            Expense expense8 = createExpense(new BigDecimal("50.00"), "Dinner", LocalDateTime.of(2024, 8, 8, 19, 0), trip1, null, ExpenseCategory.MEALS);
+            Expense expense9 = createExpense(new BigDecimal("25.00"), "Lunch at local cafè", stop6.getDate(), trip1, stop6, ExpenseCategory.MEALS);
 
-
-            Expense expense3 = createExpense(new BigDecimal("10.00"), "Museum ticket", stop1.getDate(), trip1, stop1);
-            Expense expense4 = createExpense(new BigDecimal("5.00"), "Audio guide", stop2.getDate(), trip1, stop2);
-            Expense expense5 = createExpense(new BigDecimal("35.00"), "Lunch", LocalDateTime.of(2024,8,8,13,0), trip1, null);
-            Expense expense6 = createExpense(new BigDecimal("10.00"), "Entrance Ticket", stop5.getDate(), trip1, stop5);
-            Expense expense7 = createExpense(new BigDecimal("12.00"), "Cocktail at local bar", LocalDateTime.of(2024,8,8,17,0), trip1, null);
-            Expense expense8 = createExpense(new BigDecimal("50.00"), "Dinner", LocalDateTime.of(2024,8,8,19,0), trip1, null);
-            Expense expense9 = createExpense(new BigDecimal("25.00"), "Lunch at local cafè", stop6.getDate(), trip1, stop6);
 
 
 
@@ -133,13 +129,14 @@ public class SeedData implements CommandLineRunner {
                 .build();
     }
 
-    private Expense createExpense(BigDecimal amount, String description, LocalDateTime date, Trip trip, Stop stop) {
+    private Expense createExpense(BigDecimal amount, String description, LocalDateTime date, Trip trip, Stop stop, ExpenseCategory category) {
         return Expense.builder()
                 .amount(amount)
                 .description(description)
                 .date(date)
                 .trip(trip)
                 .stop(stop)
+                .category(category)
                 .build();
     }
 
