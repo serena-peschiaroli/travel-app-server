@@ -15,6 +15,7 @@ public class ExpenseMapper {
                 .date(expense.getDate())
                 .tripId(expense.getTrip().getId())
                 .stopId(expense.getStop() != null ? expense.getStop().getId() : null)
+                .category(expense.getCategory())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class ExpenseMapper {
                 .date(expenseDto.getDate())
                 .trip(trip)
                 .stop(stop)
+                .category(expenseDto.getCategory())
                 .build();
     }
 }
