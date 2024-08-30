@@ -1,5 +1,6 @@
 package com.example.travel_app_server.dto;
 
+import com.example.travel_app_server.models.ExpenseCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +21,5 @@ public class ExpenseDto {
     private LocalDateTime date;
     private Long tripId;
     private Long stopId;
+    private ExpenseCategory category;
 }

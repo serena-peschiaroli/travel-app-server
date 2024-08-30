@@ -40,4 +40,8 @@ public class Expense {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stop_id", nullable = true)
     private Stop stop;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ExpenseCategory category;
 }

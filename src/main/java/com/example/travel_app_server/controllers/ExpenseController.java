@@ -2,6 +2,7 @@ package com.example.travel_app_server.controllers;
 
 import com.example.travel_app_server.dto.ApiResponse;
 import com.example.travel_app_server.dto.ExpenseDto;
+import com.example.travel_app_server.models.ExpenseCategory;
 import com.example.travel_app_server.services.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,17 @@ public class ExpenseController {
                 .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ApiResponse<List<ExpenseDto>>> getAllExpensesByCategory(@PathVariable ExpenseCategory category) {
+        List<ExpenseDto> expenses = expenseService.getAllExpensesByCategory(category);
+        ApiResponse<List<ExpenseDto>> response = ApiResponse.<List<ExpenseDto>>builder()
+                .status("success")
+                .data(expenses)
+                .message("Expenses retrieved successfully by category")
+                .timestamp(Instant.now())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

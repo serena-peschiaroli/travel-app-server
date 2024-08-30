@@ -2,6 +2,7 @@ package com.example.travel_app_server.services;
 
 import com.example.travel_app_server.dto.ExpenseDto;
 import com.example.travel_app_server.models.Expense;
+import com.example.travel_app_server.models.ExpenseCategory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +26,8 @@ public interface ExpenseService {
     ExpenseDto updateExpense(Long expenseId, ExpenseDto expenseDto);
 
     void deleteExpense(Long id);
+
+    List<ExpenseDto> getAllExpensesByCategory(ExpenseCategory category);
 
 
 

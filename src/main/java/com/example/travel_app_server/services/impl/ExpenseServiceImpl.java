@@ -2,6 +2,7 @@ package com.example.travel_app_server.services.impl;
 
 import com.example.travel_app_server.dto.ExpenseDto;
 import com.example.travel_app_server.models.Expense;
+import com.example.travel_app_server.models.ExpenseCategory;
 import com.example.travel_app_server.models.Stop;
 import com.example.travel_app_server.models.Trip;
 import com.example.travel_app_server.repositories.ExpenseRepository;
@@ -67,6 +68,10 @@ public class ExpenseServiceImpl implements ExpenseService {
             expenseDto.setDate(tripDate.atStartOfDay());
         }
 
+        if (expenseDto.getCategory() == null) {
+            throw new IllegalArgumentException("Category is required for the expense.");
+        }
+
 
 
         Expense expense = ExpenseMapper.toEntity(expenseDto, trip, stop);
@@ -122,11 +127,18 @@ public class ExpenseServiceImpl implements ExpenseService {
                     .orElseThrow(()-> new ResourceNotFoundException("Stop not found with id " + expenseDto.getStopId()));
         }
 
+        if (expenseDto.getCategory() == null) {
+            throw new IllegalArgumentException("Category is required for the expense.");
+        }
+
+
+
         existingExpense.setAmount(expenseDto.getAmount());
         existingExpense.setDescription(expenseDto.getDescription());
         existingExpense.setDate(expenseDto.getDate());
         existingExpense.setTrip(trip);
         existingExpense.setStop(stop);
+        existingExpense.setCategory(expenseDto.getCategory());
 
         Expense updateExpense = expenseRepository.save(existingExpense);
 
@@ -143,5 +155,11 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseRepository.deleteById(id);
 
 
+    }
+
+    @Override
+    public List<ExpenseDto> getAllExpensesByCategory(ExpenseCategory category) {
+        List<Expense> expenses = expenseRepository.findByCategory(category);
+        return expenses.stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
     }
 }
