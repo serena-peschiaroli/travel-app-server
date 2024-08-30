@@ -1,6 +1,8 @@
 package com.example.travel_app_server.utils;
 
 import com.example.travel_app_server.dto.CategoryDto;
+import com.example.travel_app_server.dto.ExpenseDto;
+import com.example.travel_app_server.dto.StopDto;
 import com.example.travel_app_server.dto.TripDto;
 import com.example.travel_app_server.models.Category;
 import com.example.travel_app_server.models.Trip;
@@ -15,6 +17,8 @@ public class TripMapper {
             return null;
         }
         List<CategoryDto> categoryDtos = trip.getCategories().stream().map(CategoryMapper::toDto).collect(Collectors.toList());
+        List<StopDto> stopDtos = trip.getStops().stream().map(StopMapper::toDto).collect(Collectors.toList());
+        List<ExpenseDto> expenseDtos = trip.getExpenses().stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
 
         return TripDto.builder()
                 .id(trip.getId())
@@ -23,6 +27,8 @@ public class TripMapper {
                 .startDate(trip.getStartDate())
                 .endDate(trip.getEndDate())
                 .categories(categoryDtos)
+                .stops(stopDtos)
+                .expenses(expenseDtos)
                 .build();
     }
 
