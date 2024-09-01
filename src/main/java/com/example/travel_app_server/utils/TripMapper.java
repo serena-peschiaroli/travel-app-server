@@ -56,7 +56,7 @@ public class TripMapper {
                 .endDate(tripDto.getEndDate())
                 .build();
 
-        // Map Stops and set reference back to Trip
+        // map stops and set reference back to Trip
         trip.setStops(tripDto.getStops() != null ?
                 tripDto.getStops().stream().map(stopDto -> StopMapper.toEntity(stopDto, trip)).collect(Collectors.toList()) :
                 new ArrayList<>());

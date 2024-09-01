@@ -18,7 +18,10 @@ import org.springframework.stereotype.Service;
 import javax.management.RuntimeErrorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +51,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     @Transactional
-
+    //add espense associating it with a trip id and optionally stop id
     public ExpenseDto addExpense(ExpenseDto expenseDto) {
         Trip trip = tripRepository.findById(expenseDto.getTripId())
                 .orElseThrow(()->new ResourceNotFoundException("trip not found with id " + expenseDto.getTripId()));
@@ -62,8 +65,10 @@ public class ExpenseServiceImpl implements ExpenseService {
                 throw new IllegalArgumentException("The provided stop is not associated with this trip");
             }
 
+            //set stop date if given
             expenseDto.setDate(stop.getDate());
         }else{
+            //if not, set trip date
             LocalDate tripDate = trip.getStartDate();
             expenseDto.setDate(tripDate.atStartOfDay());
         }
@@ -83,6 +88,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseDto getExpenseById(Long id) {
 
+
         //fetch expense
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Expense not found with id " + id));
@@ -92,6 +98,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
+    //retrieve all expenses within a specific trip
     public List<ExpenseDto> getExpensesByTripId(Long tripId) {
         //fetch trip
         Trip trip = tripRepository.findById(tripId)
@@ -105,6 +112,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
+    //retrieve all expenses within a specific stop
     public List<ExpenseDto> getExpensesByStopId(Long stopId) {
         Stop stop = stopRepository.findById(stopId)
                 .orElseThrow(()-> new ResourceNotFoundException("Stop not found with id " + stopId));
@@ -165,24 +173,30 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     @Transactional
+    //add expense to a specific trip
     public List<ExpenseDto> addExpensesToTrip(Long tripId, List<ExpenseDto> expenses) {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
 
+        // fetcj all stop ids from expenses
+        Set<Long> stopIds = expenses.stream()
+                .filter(expenseDto -> expenseDto.getStopId() != null)
+                .map(ExpenseDto::getStopId)
+                .collect(Collectors.toSet());
+
+        // get all stops and store them in a map by id
+        Map<Long, Stop> stops = stopRepository.findAllById(stopIds)
+                .stream()
+                .collect(Collectors.toMap(Stop::getId, stop -> stop));
 
         List<Expense> savedExpenses = expenses.stream().map(expenseDto -> {
-            Stop stop = null;
-            if (expenseDto.getStopId() != null) {
-                stop = stopRepository.findById(expenseDto.getStopId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Stop not found with id " + expenseDto.getStopId()));
-                if (!stop.getTrip().getId().equals(tripId)) {
-                    throw new IllegalArgumentException("The provided stop is not associated with this trip");
-                }
-                expenseDto.setDate(stop.getDate());
-            } else {
-                LocalDate tripDate = trip.getStartDate();
-                expenseDto.setDate(tripDate.atStartOfDay());
+            Stop stop = stops.get(expenseDto.getStopId());
+            if (stop != null && !stop.getTrip().getId().equals(tripId)) {
+                throw new IllegalArgumentException("The provided stop is not associated with this trip");
             }
+
+            LocalDateTime expenseDate = (stop != null) ? stop.getDate() : trip.getStartDate().atStartOfDay();
+            expenseDto.setDate(expenseDate);
 
             if (expenseDto.getCategory() == null) {
                 throw new IllegalArgumentException("Category is required for the expense.");
@@ -191,7 +205,6 @@ public class ExpenseServiceImpl implements ExpenseService {
             Expense expense = ExpenseMapper.toEntity(expenseDto, trip, stop);
             return expenseRepository.save(expense);
         }).collect(Collectors.toList());
-
 
         return savedExpenses.stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
     }
