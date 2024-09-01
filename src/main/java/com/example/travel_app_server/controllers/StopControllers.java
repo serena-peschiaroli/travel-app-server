@@ -53,7 +53,7 @@ public class StopControllers {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<StopDto>> addStop(@PathVariable Long tripId, @RequestPart("stop") StopDto stopDto, @RequestPart("photos")MultipartFile[] files){
+    public ResponseEntity<ApiResponse<StopDto>> addStop(@PathVariable Long tripId, @RequestPart("stop") StopDto stopDto, @RequestPart(value = "photos", required = false)MultipartFile[] files){
 
         List<String> photoPaths = new ArrayList<>();
         if (files != null) {

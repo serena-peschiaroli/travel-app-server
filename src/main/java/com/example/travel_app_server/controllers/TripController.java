@@ -1,7 +1,9 @@
 package com.example.travel_app_server.controllers;
 
 import com.example.travel_app_server.dto.ApiResponse;
+import com.example.travel_app_server.dto.ExpenseDto;
 import com.example.travel_app_server.dto.TripDto;
+import com.example.travel_app_server.services.ExpenseService;
 import com.example.travel_app_server.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class TripController {
     @Autowired
     private TripService tripService;
 
+    @Autowired
+    private ExpenseService expenseService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<TripDto>> addTrip(@RequestBody TripDto tripDto) {
         TripDto createdTrip = tripService.addTrip(tripDto);
@@ -27,6 +32,18 @@ public class TripController {
                 .status("success")
                 .data(createdTrip)
                 .message("Trip created successfully")
+                .timestamp(Instant.now())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/expenses")
+    public ResponseEntity<ApiResponse<List<ExpenseDto>>> addExpensesToTrip(@PathVariable Long id, @RequestBody List<ExpenseDto> expenses) {
+        List<ExpenseDto> addedExpenses = expenseService.addExpensesToTrip(id, expenses);
+        ApiResponse<List<ExpenseDto>> response = ApiResponse.<List<ExpenseDto>>builder()
+                .status("success")
+                .data(addedExpenses)
+                .message("Expenses added to trip successfully")
                 .timestamp(Instant.now())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);

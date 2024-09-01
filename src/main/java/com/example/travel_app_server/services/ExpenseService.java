@@ -17,6 +17,8 @@ public interface ExpenseService {
 
     ExpenseDto addExpense(ExpenseDto expenseDto);
 
+
+
     ExpenseDto getExpenseById(Long id);
 
     List<ExpenseDto> getExpensesByTripId(Long tripId);
@@ -28,6 +30,8 @@ public interface ExpenseService {
     void deleteExpense(Long id);
 
     List<ExpenseDto> getAllExpensesByCategory(ExpenseCategory category);
+
+    List<ExpenseDto> addExpensesToTrip(Long tripId, List<ExpenseDto> expenses);
 
 
 

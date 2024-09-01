@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,17 +32,17 @@ public class Trip {
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Stop> stops;
+    private List<Stop> stops = new ArrayList<>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Expense> expenses;
+    private List<Expense> expenses = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "category_trip",
             joinColumns = @JoinColumn(name="trip_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<Category> categories;
+    private List<Category> categories = new ArrayList<>();
 
 
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,7 +26,7 @@ public class TripDto {
     private LocalDate startDate;
     @NotNull(message = "End date is mandatory")
     private LocalDate endDate;
-    private List<StopDto> stops;
-    private List<ExpenseDto> expenses;
-    private List<CategoryDto> categories;
+    private List<StopDto> stops = new ArrayList<>();
+    private List<ExpenseDto> expenses = new ArrayList<>();
+    private List<CategoryDto> categories = new ArrayList<>();
 }

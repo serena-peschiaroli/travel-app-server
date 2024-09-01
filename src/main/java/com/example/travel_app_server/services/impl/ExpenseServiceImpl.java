@@ -162,4 +162,37 @@ public class ExpenseServiceImpl implements ExpenseService {
         List<Expense> expenses = expenseRepository.findByCategory(category);
         return expenses.stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public List<ExpenseDto> addExpensesToTrip(Long tripId, List<ExpenseDto> expenses) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
+
+
+        List<Expense> savedExpenses = expenses.stream().map(expenseDto -> {
+            Stop stop = null;
+            if (expenseDto.getStopId() != null) {
+                stop = stopRepository.findById(expenseDto.getStopId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Stop not found with id " + expenseDto.getStopId()));
+                if (!stop.getTrip().getId().equals(tripId)) {
+                    throw new IllegalArgumentException("The provided stop is not associated with this trip");
+                }
+                expenseDto.setDate(stop.getDate());
+            } else {
+                LocalDate tripDate = trip.getStartDate();
+                expenseDto.setDate(tripDate.atStartOfDay());
+            }
+
+            if (expenseDto.getCategory() == null) {
+                throw new IllegalArgumentException("Category is required for the expense.");
+            }
+
+            Expense expense = ExpenseMapper.toEntity(expenseDto, trip, stop);
+            return expenseRepository.save(expense);
+        }).collect(Collectors.toList());
+
+
+        return savedExpenses.stream().map(ExpenseMapper::toDto).collect(Collectors.toList());
+    }
 }
